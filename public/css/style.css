@@ -5,8 +5,15 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
 }
 
 /* Header */
@@ -27,6 +34,10 @@ header {
 }
 
 /* Navigation */
+nav {
+  aria-label: "Main navigation";
+}
+
 .nav-list {
   list-style: none;
   display: flex;
@@ -39,39 +50,86 @@ header {
   text-decoration: none;
   font-weight: bold;
   padding: 5px 10px;
-  transition: background 0.3s;
+  transition: background 0.3s, color 0.3s;
 }
 
-.nav-list li a:hover {
+.nav-list li a:hover,
+.nav-list li a:focus {
   background-color: #555;
   border-radius: 4px;
+  outline: none;
 }
 
 /* Hero Section */
 .hero {
   text-align: center;
-  padding: 20px;
+  padding: 40px 20px;
+  background-color: #f4f4f4;
+}
+
+.hero h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
 }
 
 .hero img {
   max-width: 100%;
   height: auto;
+  border-radius: 8px;
 }
 
 /* Featured Cars */
 .featured-cars {
-  padding: 20px;
+  padding: 40px 20px;
+  background-color: #fff;
+}
+
+.featured-cars h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: #222;
 }
 
 .car-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+}
+
+.car {
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  transition: transform 0.2s;
+}
+
+.car:hover {
+  transform: scale(1.02);
 }
 
 .car img {
   width: 100%;
   height: auto;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.car h3 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.car p {
+  font-weight: bold;
+  color: #444;
 }
 
 /* Footer */
@@ -79,7 +137,16 @@ footer {
   background-color: #333;
   color: #fff;
   text-align: center;
-  padding: 15px;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 0.9rem;
+}
+
+/* Accessibility Focus Styles */
+a:focus,
+button:focus {
+  outline: 2px solid #ffcc00;
+  outline-offset: 3px;
 }
 
 /* Responsive adjustments */
@@ -93,5 +160,13 @@ footer {
     flex-direction: column;
     width: 100%;
     gap: 10px;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
   }
 }
