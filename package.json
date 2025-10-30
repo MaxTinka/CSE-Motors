@@ -1,31 +1,19 @@
 {
   "name": "cse-motors",
   "version": "1.0.0",
-  "description": "CSE Motors - A car dealership website built with Node.js, Express, and EJS.",
-  "main": "app.js",
-  "type": "module",
+  "description": "CSE Motors site for W01 assignment",
+  "main": "server.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
-  "keywords": [
-    "express",
-    "ejs",
-    "nodejs",
-    "render",
-    "car-dealership",
-    "cse-motors"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
+  "author": "Max Tinka",
+  "license": "ISC",
   "dependencies": {
-    "ejs": "^3.1.10",
+    "ejs": "^3.1.9",
     "express": "^4.19.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
-  },
-  "engines": {
-    "node": ">=18.x"
   }
 }
