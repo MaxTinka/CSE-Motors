@@ -1,6 +1,3 @@
--- CSE Motors Database Rebuild File
--- Assignment 2 - Max Tinka
-
 -- Drop existing objects if they exist
 DROP TABLE IF EXISTS public.inventory CASCADE;
 DROP TABLE IF EXISTS public.account CASCADE;
@@ -65,13 +62,32 @@ INSERT INTO public.inventory (
     inv_color, classification_id
 ) VALUES 
     ('DMC', 'Delorean', '1981', 'The iconic time-traveling vehicle with flux capacitor',
-     '/images/vehicles/delorean.jpg', '/images/vehicles/delorean-tn.jpg',
+     '/images/delorean.jpg', '/images/delorean-tn.jpg',
      45000, 15000, 'Silver', 1),
      
-    ('GM', 'Hummer', '2023', 'a huge interior with advanced off-road capabilities',
-     '/images/vehicles/hummer.jpg', '/images/vehicles/hummer-tn.jpg',
+    ('GM', 'Hummer', '2023', 'small interiors with advanced off-road capabilities',
+     '/images/hummer.jpg', '/images/hummer-tn.jpg',
      85000, 5000, 'Black', 3),
      
     ('Ford', 'Mustang', '2024', 'Classic American muscle car with modern performance',
-     '/images/vehicles/mustang.jpg', '/images/vehicles/mustang-tn.jpg',
-     35000, 2000, 'Blue', 2);
+     '/images/mustang.jpg', '/images/mustang-tn.jpg',
+     35000, 2000, 'Blue', 2),
+     
+    ('Chevrolet', 'Camaro', '2023', 'Sporty coupe with powerful engine',
+     '/images/camaro.jpg', '/images/camaro-tn.jpg',
+     32000, 3000, 'Yellow', 2);
+
+-- TASK 1 - Query 4: Modify GM Hummer description
+UPDATE public.inventory 
+SET inv_description = REPLACE(
+    inv_description, 
+    'small interiors', 
+    'a huge interior'
+) 
+WHERE inv_make = 'GM' AND inv_model = 'Hummer';
+
+-- TASK 1 - Query 6: Update image paths to include /vehicles
+UPDATE public.inventory 
+SET 
+    inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
+    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
