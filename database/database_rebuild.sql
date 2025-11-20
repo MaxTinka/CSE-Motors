@@ -1,38 +1,48 @@
--- database_rebuild.sql
 -- CSE Motors Database Rebuild File
 
--- 1. Create custom type (if any, example for demonstration)
--- You can adjust or remove if not needed
--- CREATE TYPE public.vehicle_type AS ENUM ('Sedan', 'SUV', 'Truck', 'Custom');
+-- Drop tables if they exist (for clean rebuild)
+DROP TABLE IF EXISTS public.inventory CASCADE;
+DROP TABLE IF EXISTS public.account CASCADE;
+DROP TABLE IF EXISTS public.classification CASCADE;
+DROP TYPE IF EXISTS public.account_type CASCADE;
 
--- 2. Create Classification Table
-CREATE TABLE IF NOT EXISTS public.classification (
+-- Create custom type for account roles
+CREATE TYPE public.account_type AS ENUM ('Client', 'Employee', 'Admin');
+
+-- Create Classification Table
+CREATE TABLE public.classification (
     classification_id SERIAL PRIMARY KEY,
-    classification_name VARCHAR(50) NOT NULL
+    classification_name VARCHAR(50) NOT NULL UNIQUE
 );
 
--- 3. Create Inventory Table
-CREATE TABLE IF NOT EXISTS public.inventory (
+-- Create Inventory Table with enhanced fields
+CREATE TABLE public.inventory (
     inv_id SERIAL PRIMARY KEY,
     inv_make VARCHAR(50) NOT NULL,
     inv_model VARCHAR(50) NOT NULL,
+    inv_year CHAR(4),
+    inv_price NUMERIC(10,2),
+    inv_miles INTEGER,
+    inv_color VARCHAR(30),
     inv_description TEXT,
     inv_image TEXT,
     inv_thumbnail TEXT,
-    classification_id INT REFERENCES public.classification(classification_id)
+    classification_id INT NOT NULL REFERENCES public.classification(classification_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. Create Account Table
-CREATE TABLE IF NOT EXISTS public.account (
+-- Create Account Table
+CREATE TABLE public.account (
     account_id SERIAL PRIMARY KEY,
     account_firstname VARCHAR(50) NOT NULL,
     account_lastname VARCHAR(50) NOT NULL,
     account_email VARCHAR(100) NOT NULL UNIQUE,
     account_password VARCHAR(100) NOT NULL,
-    account_type VARCHAR(20) DEFAULT 'Customer'
+    account_type public.account_type DEFAULT 'Client',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. Insert Data into Classification Table
+-- Insert Data into Classification Table
 INSERT INTO public.classification (classification_name) VALUES
 ('Sport'),
 ('SUV'),
@@ -40,25 +50,24 @@ INSERT INTO public.classification (classification_name) VALUES
 ('Sedan'),
 ('Custom');
 
--- 6. Insert Data into Inventory Table
-INSERT INTO public.inventory (inv_make, inv_model, inv_description, inv_image, inv_thumbnail, classification_id) VALUES
-('GM', 'Hummer', 'the small interiors', '/images/hummer.jpg', '/images/hummer_thumb.jpg', 2),
-('Ford', 'Mustang', 'Classic muscle car', '/images/mustang.jpg', '/images/mustang_thumb.jpg', 1),
-('Chevrolet', 'Camaro', 'Sporty coupe', '/images/camaro.jpg', '/images/camaro_thumb.jpg', 1),
-('Tesla', 'Model S', 'Electric luxury sedan', '/images/models.jpg', '/images/models_thumb.jpg', 4);
+-- Insert Data into Inventory Table with proper image paths
+INSERT INTO public.inventory (
+    inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color, 
+    inv_description, inv_image, inv_thumbnail, classification_id
+) VALUES
+('DMC', 'Delorean', '1981', 45000, 15000, 'Silver',
+ 'The iconic time-traveling vehicle with flux capacitor', 
+ '/images/vehicles/delorean.jpg', '/images/vehicles/delorean-tn.jpg', 5),
+ 
+('GM', 'Hummer', '2023', 85000, 5000, 'Black',
+ 'a huge interior with advanced off-road capabilities', 
+ '/images/vehicles/hummer.jpg', '/images/vehicles/hummer-tn.jpg', 2),
+ 
+('Ford', 'Mustang', '2024', 35000, 2000, 'Red',
+ 'Classic American muscle car with modern performance', 
+ '/images/vehicles/mustang.jpg', '/images/vehicles/mustang-tn.jpg', 1);
 
--- 7. Task 1 Queries to run at the end of rebuild
--- 7a. Update GM Hummer description
-UPDATE public.inventory 
-SET inv_description = REPLACE(
-    inv_description, 
-    'the small interiors', 
-    'a huge interior'
-) 
-WHERE inv_make = 'GM' AND inv_model = 'Hummer';
-
--- 7b. Update inventory image paths
-UPDATE public.inventory 
-SET 
-    inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
-    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+-- Create indexes for better performance
+CREATE INDEX idx_inventory_classification ON public.inventory(classification_id);
+CREATE INDEX idx_inventory_make_model ON public.inventory(inv_make, inv_model);
+CREATE INDEX idx_account_email ON public.account(account_email);
