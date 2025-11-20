@@ -16,15 +16,15 @@ const static = require("./routes/static")
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
+app.set("layout", "./layouts/layout")
 
 /* ***********************
  * Routes
  *************************/
 app.use(static)
 
-//Index route
-app.get("/" , function(req, res){
+// Index route
+app.get("/", function(req, res){
   res.render("index", {title: "Home"})
 })
 
@@ -32,12 +32,12 @@ app.get("/" , function(req, res){
  * Local Server Information
  * Values from .env (environment) file
  *************************/
-const port = process.env.PORT
-const host = process.env.HOST
+const port = process.env.PORT || 3000
+const host = process.env.HOST || 'localhost'
 
 /* ***********************
  * Log statement to confirm server operation
  *************************/
-app.listen(port, () => {
+app.listen(port, host, () => {
   console.log(`app listening on ${host}:${port}`)
 })
