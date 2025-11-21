@@ -16,7 +16,7 @@ const static = require("./routes/static")
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout")
+app.set("layout", "./layouts/layout") // not at views root
 
 /* ***********************
  * Routes
@@ -27,16 +27,23 @@ app.use(static)
 app.get("/", function(req, res){
   res.render("index", {title: "Home"})
 })
+
+/* ***********************
+ * Inventory Routes
+ *************************/
+const inventoryRoute = require("./routes/inventoryRoute")
+app.use("/inv", inventoryRoute)
+
 /* ***********************
  * Local Server Information
  * Values from .env (environment) file
  *************************/
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 10000
+const host = process.env.HOST || '0.0.0.0'
 
 /* ***********************
  * Log statement to confirm server operation
  *************************/
 app.listen(port, () => {
-  console.log(`app listening on port ${port}`);
-});
-
+  console.log(`app listening on ${host}:${port}`)
+})
