@@ -9,109 +9,93 @@
 body {
     font-family: Arial, sans-serif;
     color: #333;
-    background-color: #f0f0f0; /* Assuming the background is light grey outside the main container */
+    background-color: #f0f0f0;
+    line-height: 1.6;
 }
 
 /* --- Site Header Styles --- */
 
 .site-header {
-    /* Use Flexbox to align items horizontally */
     display: flex;
-    /* Space out the logo and account link */
     justify-content: space-between;
-    /* Vertically center the items */
-    align-items:initial;
-    color: white; /* Text color */
-    padding: 5px 10px; /* Padding inside the header */
-    border-bottom: 5px solid #00bcd4; /* Teal border at the bottom */
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-bottom: 5px solid #00bcd4;
 }
 
 .site-header h1 {
-    
     margin: 0;
     font-size: 1.5em;
     font-weight: normal;
 }
 
 .site-header a {
-    /* Set text color to white */
-    color:black;
+    color: white;
+    text-decoration: none;
 }
 
 .my-account {
-    /* Style the MY ACCOUNT link */
     font-size: 0.8em;
     font-weight: bold;
     text-decoration: underline;
     text-transform: uppercase;
 }
-.cse{
-     /* Remove underline from link */
-    text-decoration: none;
-}
 
 /* --- Main Navigation Styles --- */
 
 .main-nav {
-    background-color: #333; /* Dark gray background */
-    margin: 0 auto;
+    background-color: #444;
+    padding: 0;
 }
 
 .main-nav ul {
-    /* Use Flexbox to arrange list items horizontally */
     display: flex;
-    /* Remove padding/margin and list styles */
+    flex-direction: column;
     list-style-type: none;
     padding: 0;
     margin: 0;
-    /* Ensure the list items fill the entire width of the nav bar */
-    justify-content: space-around;
 }
 
 .main-nav li {
-    /*  list item flexible and equally sized */
-    flex-grow: 1;
-    text-align: center; 
+    border-bottom: 1px solid #555;
 }
 
 .main-nav a {
-    
     display: block;
-    padding: 10px 5px; /* Vertical and horizontal padding */
+    padding: 12px 20px;
     text-decoration: none;
-    color: white; /* Default link text color */
-    font-size: 0.9em;
+    color: white;
+    font-size: 1em;
     font-weight: bold;
     text-transform: uppercase;
-    transition: background-color 0.2s; 
+    transition: all 0.3s ease;
 }
 
-/* Highlight for the currently active page (Home) */
 .main-nav a.active {
-    border-radius:10px ;
-    color: white; 
+    background-color: #00bcd4;
+    color: white;
 }
 
-/* Hover effect for all links */
-.main-nav a:hover,
-.main-nav a:focus {
-    background-color: white; 
-    color: black; 
-    border-radius:10px ;
+.main-nav a:hover {
+    background-color: white;
+    color: #333;
 }
 
+/* --- Main Content Styles --- */
 
 .home {
-    max-width: 500px; /* Max width for mobile-first design */
+    max-width: 100%;
     margin: 0 auto;
-    padding: 10px;
-    background-color: white; /* White background for the content area */
+    padding: 20px;
+    background-color: white;
 }
 
 h2 {
     font-size: 1.5em;
-    margin-bottom: 0.5em;
-    padding-top: 10px; /* Adding some space above the main heading */
+    margin-bottom: 1em;
+    padding-top: 10px;
 }
 
 h3 {
@@ -125,13 +109,14 @@ h3 {
 }
 
 ul {
-    list-style-type: none; /* Removing bullet points */
+    list-style-type: none;
     margin-left: 0;
     padding-left: 0;
     margin-bottom: 1em;
 }
 
-/* Sections */
+/* --- Sections --- */
+
 section {
     margin-bottom: 2em;
 }
@@ -140,172 +125,253 @@ section {
 
 .delorean-section {
     display: flex;
-    flex-direction: column; /* Stack info and image vertically on mobile */
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .delorean-info {
-    order:2 ; /* Put info below the image initially */
-    padding-bottom: 10px;
+    order: 2;
+    width: 100%;
 }
 
 .delorean-info ul {
-    color: black; 
-    background-color:whitesmoke;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
     font-weight: bold;
-    margin-top: 5px;
-    padding: 5px;
 }
 
 .delorean-section img {
     max-width: 100%;
     height: auto;
-    order: 1; /* Image first on mobile */
-    margin-bottom: 15px;
+    order: 1;
+    border-radius: 8px;
 }
 
 /* "Own Today" Button */
 .btn {
     display: inline-block;
-    padding: 8px 15px;
-    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #00bcd4;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
     margin-top: 10px;
+}
+
+.btn:hover {
+    background-color: #0097a7;
 }
 
 /* --- Upgrades Section --- */
 
-.upgrades h3 {
-    margin-top: 1em;
-}
-
 .upgrade-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns on mobile */
-    gap: 10px; /* Space between grid items */
+    grid-template-columns: 1fr;
+    gap: 15px;
 }
 
 .upgrade-item {
     text-align: center;
-    background-color: rgb(223, 215, 215);
-    padding: 10px;
-    border-radius: 5px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
 .upgrade-item img {
     width: 100%;
-    max-width: 100px; 
+    max-width: 120px;
     height: auto;
-    display: block; /* Remove extra space below image */
-    margin: 0 auto 5px; /* Center image */
+    margin: 0 auto 10px;
+    display: block;
 }
 
 .upgrade-item a {
-    color: black; /* Link text color */
-    text-decoration: underline;
+    color: #333;
+    text-decoration: none;
     font-weight: bold;
-    font-size: 0.9em;
-    display: block; /* Make the link take full width */
+    display: block;
+}
+
+.upgrade-item a:hover {
+    color: #00bcd4;
 }
 
 /* --- Reviews Section --- */
 
 .reviews ul {
-    list-style-type: disc; /* Use standard bullet points for reviews */
+    list-style-type: disc;
     margin-left: 20px;
 }
 
-/* Ensure sections are displayed clearly on mobile */
-.reviews {
-    order: 3;
-}
-
-.upgrades {
-    order: 4;
+.reviews li {
+    margin-bottom: 0.5em;
+    padding-left: 5px;
 }
 
 /* --- Footer Styles --- */
 
 footer {
-    /* Ensures the footer spans the entire width */
     width: 100%;
-    /* Add space above the footer to separate it from content */
-    margin-top: 10px;  
-    background-color: Black;
-    color: white; 
-    font-size: large;
-    font-weight: bolder;
-    /* Padding above and below the text */
-    padding: 15px; 
-    /* Center the copyright text */
+    margin-top: 20px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
     text-align: center;
 }
 
 .copyright {
-    /* Reset margins for clean centering */
     margin: 0;
-    /* Smaller, less prominent text */
-    font-size: 0.85em; 
-    color: white; 
+    font-size: 0.9em;
 }
 
-/* --- Tablet and Desktop Styles (Large Viewport) --- */
+/* --- Tablet Styles (768px and up) --- */
 
 @media (min-width: 768px) {
+    .main-nav ul {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    
+    .main-nav li {
+        border-bottom: none;
+        flex-grow: 1;
+        text-align: center;
+    }
+    
     .home {
-        max-width: 800px; /* Wider content area for desktop */
+        max-width: 90%;
         padding: 30px;
     }
-
-    /* --- Intro Section (Desktop Layout) --- */
-    .delorean-section {
-        flex-direction: row; /* Image and info side-by-side */
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .delorean-info {
-       z-index: 1;
-        width: 40%;
-        padding-right: 20px;
-    }
-
-    .delorean-section img {
-        order: 2;
-        width: 60%;
-        margin-bottom: 0;
-    }
-
-    /* --- Two Column Layout for Reviews and Upgrades --- */
-
-    .home {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Two main columns for content */
-        grid-template-rows: auto auto auto;
-        gap: 20px;
-    }
-
-    .intro {
-        grid-column: 1 / -1; /* Intro spans both columns */
-        grid-row: 1;
-    }
-
-    .reviews {
-        grid-column: 2 / 3; /* Reviews on the right */
-        grid-row: 2;
-        padding-left: 20px;
-        margin-bottom: 0;
-    }
-
-    .upgrades {
-        grid-column: 1 / 2; /* Upgrades on the left */
-        grid-row: 2;
-        padding-right: 10px;
-        margin-bottom: 0;
-    }
-
-    /* Upgrades grid should have 2 columns inside its container on desktop */
+    
     .upgrade-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
+}
+
+/* --- Desktop Styles (1024px and up) --- */
+
+@media (min-width: 1024px) {
+    .site-header {
+        padding: 15px 40px;
+    }
+    
+    .site-header h1 {
+        font-size: 2em;
+    }
+    
+    .home {
+        max-width: 1200px;
+        padding: 40px;
+    }
+    
+    /* Two-column layout for desktop */
+    .home {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 30px;
+    }
+    
+    .intro {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+    
+    .delorean-section {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 40px;
+    }
+    
+    .delorean-info {
+        order: 1;
+        width: 40%;
+    }
+    
+    .delorean-section img {
+        order: 2;
+        width: 60%;
+        max-width: 500px;
+    }
+    
+    .reviews {
+        grid-column: 2;
+        grid-row: 2;
+        padding-left: 20px;
+    }
+    
+    .upgrades {
+        grid-column: 1;
+        grid-row: 2;
+        padding-right: 20px;
+    }
+    
+    .upgrade-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Navigation adjustments for desktop */
+    .main-nav a {
+        padding: 15px 20px;
+        font-size: 1.1em;
+    }
+}
+
+/* --- Large Desktop Styles (1200px and up) --- */
+
+@media (min-width: 1200px) {
+    .upgrade-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .home {
+        grid-template-columns: 3fr 1fr;
+    }
+}
+
+/* --- Utility Classes --- */
+
+.vehicle-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.vehicle-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.vehicle-info {
+    padding: 20px;
+}
+
+.price {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #00bcd4;
+}
+
+.mileage {
+    font-size: 1.1em;
+    color: #666;
+}
+
+/* Ensure images are responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Improve button visibility */
+.btn img {
+    max-width: 200px;
+    height: auto;
 }
