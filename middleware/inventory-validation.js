@@ -1,3 +1,4 @@
+const { body, validationResult } = require("express-validator")
 const utilities = require("../utilities/")
 
 /* ***************************
@@ -22,12 +23,11 @@ invValidate.classificationRules = () => {
  * ************************** */
 invValidate.checkClassificationData = async (req, res, next) => {
   const { classification_name } = req.body
-  let errors = []
-  errors = validationResult(req)
+  let errors = validationResult(req)
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav()
     res.render("inventory/add-classification", {
-      errors,
+      errors: errors.array(),
       title: "Add New Classification",
       nav,
       classification_name,
@@ -108,7 +108,7 @@ invValidate.checkInventoryData = async (req, res, next) => {
     let nav = await utilities.getNav()
     let classificationList = await utilities.buildClassificationList(classification_id)
     res.render("inventory/add-inventory", {
-      errors,
+      errors: errors.array(),
       title: "Add New Vehicle", 
       nav,
       classificationList,
