@@ -1,3 +1,7 @@
+/* ******************************************
+ * This server.js file is the primary file of the 
+ * application. It is used to control the project.
+ *******************************************/
 /* ***********************
  * Require Statements
  *************************/
@@ -16,12 +20,16 @@ const static = require("./routes/static")
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Session configuration
+// Session configuration - Simple version for development
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'cse340-secret-key',
+  secret: process.env.SESSION_SECRET || 'cse340-motors-secret-key-' + Math.random().toString(36).substring(2, 15),
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // set to true in production with HTTPS
+  cookie: { 
+    secure: false, // Set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 // 1 day
+  }
 }))
 
 // Flash messages
@@ -32,6 +40,69 @@ app.use(flash())
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout")
+app.set("layout", "./layouts/layout") // not at views root
 
-// ... rest of your server.js ...
+/* ***********************
+ * Routes
+ *************************/
+app.use(static)
+
+// Index route
+app.get("/", function(req, res){
+  res.render("index", {title: "Home"})
+})
+
+/* ***********************
+ * Inventory Routes
+ *************************/
+const inventoryRoute = require("./routes/inventoryRoute")
+app.use("/inv", inventoryRoute)
+
+/* ***********************
+ * Error Handling Middleware
+ *************************/
+
+// 404 Not Found handler
+app.use((req, res) => {
+  res.status(404).render("errors/404", {
+    title: "Page Not Found",
+    message: "Sorry, we couldn't find the page you were looking for."
+  })
+})
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error("Global error handler:", err.stack)
+  res.status(500).render("errors/500", {
+    title: "Server Error",
+    message: "Something went wrong on our end. Please try again later."
+  })
+})
+
+/* ***********************
+ * Local Server Information
+ * Values from .env (environment) file
+ *************************/
+const port = process.env.PORT || 10000
+const host = process.env.HOST || '0.0.0.0'
+
+/* ***********************
+ * Log statement to confirm server operation
+ *************************/
+app.listen(port, host, () => {
+  console.log(`app listening on ${host}:${port}`)
+}).on('error', (err) => {
+  console.error('Server failed to start:', err)
+  process.exit(1)
+})
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\nServer shutting down...')
+  process.exit(0)
+})
+
+process.on('SIGTERM', () => {
+  console.log('\nServer shutting down...')
+  process.exit(0)
+})
