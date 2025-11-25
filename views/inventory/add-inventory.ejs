@@ -1,0 +1,89 @@
+<%- include('../partials/header') %>
+<main class="form-container">
+    <h1>Add New Vehicle</h1>
+    
+    <% if (message) { %>
+        <div class="message error">
+            <%= message %>
+        </div>
+    <% } %>
+    
+    <form action="/inv/add-inventory" method="post" class="inventory-form">
+        <div class="form-group">
+            <label for="classification_id">Classification:</label>
+            <%- classificationList %>
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_make">Make:</label>
+            <input type="text" name="inv_make" id="inv_make" required
+                <% if (inv_make) { %> value="<%= inv_make %>" <% } %>
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_model">Model:</label>
+            <input type="text" name="inv_model" id="inv_model" required
+                <% if (inv_model) { %> value="<%= inv_model %>" <% } %>
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_year">Year:</label>
+            <input type="text" name="inv_year" id="inv_year" required pattern="\d{4}"
+                <% if (inv_year) { %> value="<%= inv_year %>" <% } %>
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_description">Description:</label>
+            <textarea name="inv_description" id="inv_description" required
+            ><% if (inv_description) { %><%= inv_description %><% } %></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_image">Image Path:</label>
+            <input type="text" name="inv_image" id="inv_image" 
+                value="/images/vehicles/no-image-available.jpg"
+                <% if (inv_image && inv_image !== "/images/vehicles/no-image-available.jpg") { %> 
+                    value="<%= inv_image %>" 
+                <% } %>
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_thumbnail">Thumbnail Path:</label>
+            <input type="text" name="inv_thumbnail" id="inv_thumbnail" 
+                value="/images/vehicles/no-image-available-tn.jpg"
+                <% if (inv_thumbnail && inv_thumbnail !== "/images/vehicles/no-image-available-tn.jpg") { %> 
+                    value="<%= inv_thumbnail %>" 
+                <% } %>
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_price">Price:</label>
+            <input type="number" name="inv_price" id="inv_price" required step="0.01"
+                <% if (inv_price) { %> value="<%= inv_price %>" <% } %>
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_miles">Miles:</label>
+            <input type="number" name="inv_miles" id="inv_miles" required
+                <% if (inv_miles) { %> value="<%= inv_miles %>" <% } %>
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="inv_color">Color:</label>
+            <input type="text" name="inv_color" id="inv_color" required
+                <% if (inv_color) { %> value="<%= inv_color %>" <% } %>
+            >
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Add Vehicle</button>
+        <a href="/inv/" class="btn btn-secondary">Cancel</a>
+    </form>
+</main>
+<%- include('../partials/footer') %>
