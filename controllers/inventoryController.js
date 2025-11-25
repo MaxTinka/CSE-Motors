@@ -3,59 +3,81 @@ const utilities = require("../utilities/")
 
 const invController = {}
 
-/* ***************************
- *  Build inventory by classification view
- * ************************** */
-invController.buildByClassificationId = async function (req, res, next) {
-  const classification_id = req.params.classificationId
-  let data = await invModel.getInventoryByClassificationId(classification_id)
-  
-  if (!data || data.length === 0) {
-    // Handle no vehicles found
-    let nav = await utilities.getNav()
-    res.render("./inventory/classification", {
-      title: "No Vehicles Found",
-      nav,
-      grid: '<p class="notice">Sorry, no matching vehicles could be found.</p>',
-    })
-    return
-  }
-  
-  const grid = await utilities.buildClassificationGrid(data)
+// Build management view
+invController.buildManagement = async function (req, res, next) {
   let nav = await utilities.getNav()
-  const className = data[0].classification_name
-  res.render("./inventory/classification", {
-    title: className + " vehicles",
+  res.render("./inventory/management", {
+    title: "Inventory Management",
     nav,
-    grid,
+    message: req.flash('message') || null,
+    messageType: req.flash('messageType') || null
   })
 }
 
-/* ***************************
- *  Build vehicle detail view
- * ************************** */
-invController.buildByInvId = async function (req, res, next) {
-  const inv_id = req.params.invId
-  let data = await invModel.getInventoryById(inv_id)
-  
-  // ADD THIS NULL CHECK - FIXES THE ERROR
-  if (!data) {
-    let nav = await utilities.getNav()
-    res.render("./inventory/detail", {
-      title: "Vehicle Not Found",
-      nav,
-      grid: '<p class="notice">Sorry, vehicle details could not be found.</p>',
-    })
-    return
-  }
-  
-  const grid = await utilities.buildVehicleDetail(data)
+// Build add classification view
+invController.buildAddClassification = async function (req, res, next) {
   let nav = await utilities.getNav()
-  res.render("./inventory/detail", {
-    title: data.inv_make + " " + data.inv_model,
+  res.render("./inventory/add-classification", {
+    title: "Add New Classification", 
     nav,
-    grid,
+    message: req.flash('message') || null,
+    classification_name: req.flash('classification_name') || null
   })
 }
 
+// Build add inventory view
+invController.buildAddInventory = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  let classificationList = await utilities.buildClassificationList()
+  res.render("./inventory/add-inventory", {
+    title: "Add New Vehicle",
+    nav,
+    classificationList,
+    message: req.flash('message') || null,
+    ...req.flash('formData') || {}
+  })
+}
+
+// Add new classification
+invController.addClassification = async function (req, res, next) {
+  const { classification_name } = req.body
+  const addResult = await invModel.addClassification(classification_name)
+  
+  if (addResult) {
+    req.flash('message', `Classification "${classification_name}" was successfully added.`)
+    req.flash('messageType', 'success')
+    res.redirect("/inv/")
+  } else {
+    req.flash('message', "Sorry, the classification could not be added.")
+    req.flash('classification_name', classification_name)
+    res.redirect("/inv/add-classification")
+  }
+}
+
+// Add new inventory
+invController.addInventory = async function (req, res, next) {
+  const { 
+    classification_id, inv_make, inv_model, inv_year, 
+    inv_description, inv_image, inv_thumbnail, 
+    inv_price, inv_miles, inv_color 
+  } = req.body
+  
+  const addResult = await invModel.addInventory({
+    classification_id, inv_make, inv_model, inv_year,
+    inv_description, inv_image, inv_thumbnail,
+    inv_price, inv_miles, inv_color
+  })
+  
+  if (addResult) {
+    req.flash('message', `Vehicle "${inv_make} ${inv_model}" was successfully added.`)
+    req.flash('messageType', 'success')
+    res.redirect("/inv/")
+  } else {
+    req.flash('message', "Sorry, the vehicle could not be added.")
+    req.flash('formData', req.body)
+    res.redirect("/inv/add-inventory")
+  }
+}
+
+// Keep existing functions...
 module.exports = invController
