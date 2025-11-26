@@ -45,9 +45,6 @@
             <label for="inv_image">Image Path:</label>
             <input type="text" name="inv_image" id="inv_image" 
                 value="/images/vehicles/no-image-available.jpg"
-                <% if (inv_image && inv_image !== "/images/vehicles/no-image-available.jpg") { %> 
-                    value="<%= inv_image %>" 
-                <% } %>
             >
         </div>
         
@@ -55,9 +52,6 @@
             <label for="inv_thumbnail">Thumbnail Path:</label>
             <input type="text" name="inv_thumbnail" id="inv_thumbnail" 
                 value="/images/vehicles/no-image-available-tn.jpg"
-                <% if (inv_thumbnail && inv_thumbnail !== "/images/vehicles/no-image-available-tn.jpg") { %> 
-                    value="<%= inv_thumbnail %>" 
-                <% } %>
             >
         </div>
         
