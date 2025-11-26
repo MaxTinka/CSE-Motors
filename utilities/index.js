@@ -8,10 +8,10 @@ const utilities = {}
 utilities.getNav = async function () {
   try {
     let data = await invModel.getClassifications()
-    if (data && data.rows) {
+    if (data) {
       let list = "<ul>"
       list += '<li><a href="/" title="Home page">Home</a></li>'
-      data.rows.forEach((row) => {
+      data.forEach((row) => {
         list += "<li>"
         list +=
           '<a href="/inv/type/' +
@@ -46,7 +46,7 @@ utilities.getNav = async function () {
 utilities.buildClassificationGrid = async function(data){
   try {
     let grid
-    if(data.length > 0){
+    if(data && data.length > 0){
       grid = '<ul id="inv-display">'
       data.forEach(vehicle => { 
         grid += '<li>'
@@ -84,7 +84,7 @@ utilities.buildClassificationGrid = async function(data){
 utilities.buildVehicleDetail = async function(data){
   try {
     let detail
-    if(data.length > 0){
+    if(data && data.length > 0){
       const vehicle = data[0]
       detail = '<div id="vehicle-detail">'
       detail += '<div class="detail-image">'
@@ -121,8 +121,8 @@ utilities.buildClassificationList = async function (classification_id = null) {
     let classificationList = '<select name="classification_id" id="classificationList" required>'
     classificationList += "<option value=''>Choose a Classification</option>"
     
-    if (data && data.rows) {
-      data.rows.forEach((row) => {
+    if (data) {
+      data.forEach((row) => {
         classificationList += '<option value="' + row.classification_id + '"'
         if (classification_id != null && row.classification_id == classification_id) {
           classificationList += " selected "
