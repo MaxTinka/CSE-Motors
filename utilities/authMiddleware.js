@@ -18,7 +18,7 @@ const authMiddleware = {
       res.locals.accountData = decoded;
       next();
     } catch (error) {
-      // Token is invalid or expired
+      // Token is invalid
       res.clearCookie("jwt");
       res.locals.loggedin = false;
       res.locals.accountData = null;
