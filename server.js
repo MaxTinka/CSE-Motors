@@ -22,25 +22,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Session configuration
+// Session configuration - Simple version for development
 app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    // Create the 'session' table in your database first
-    // CREATE TABLE "session" (
-    //   "sid" varchar NOT NULL COLLATE "default",
-    //   "sess" json NOT NULL,
-    //   "expire" timestamp(6) NOT NULL
-    // ) WITH (OIDS=FALSE);
-    // ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-    // CREATE INDEX "IDX_session_expire" ON "session" ("expire");
-    conString: process.env.DATABASE_URL,
-    tableName: 'session'
-  }),
-  secret: process.env.SESSION_SECRET || 'cse340-motors-secret-key-' + Math.random().toString(36).substring(2, 15),
+  secret: process.env.SESSION_SECRET || 'cse340-motors-secret-key',
   resave: false,
   saveUninitialized: true,
   cookie: { 
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Set to true in production with HTTPS
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
