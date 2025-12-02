@@ -1,3 +1,8 @@
+const pool = require("../database/");
+const bcrypt = require("bcryptjs");
+
+const accountModel = {};
+
 /* ***************************
  * Get account by ID
  * ************************** */
@@ -25,8 +30,7 @@ accountModel.updateAccount = async function (
     const sql = `UPDATE account 
       SET account_firstname = $1, 
           account_lastname = $2, 
-          account_email = $3,
-          account_updated = CURRENT_TIMESTAMP
+          account_email = $3
       WHERE account_id = $4 
       RETURNING *`;
     
@@ -49,8 +53,7 @@ accountModel.updateAccount = async function (
 accountModel.updatePassword = async function (account_id, hashedPassword) {
   try {
     const sql = `UPDATE account 
-      SET account_password = $1,
-          account_updated = CURRENT_TIMESTAMP
+      SET account_password = $1
       WHERE account_id = $2 
       RETURNING *`;
     
@@ -61,3 +64,26 @@ accountModel.updatePassword = async function (account_id, hashedPassword) {
     return null;
   }
 };
+
+/* ***************************
+ * Check if email exists (excluding current account)
+ * ************************** */
+accountModel.checkEmailExists = async function (account_email, account_id = null) {
+  try {
+    let sql = "SELECT * FROM account WHERE account_email = $1";
+    const params = [account_email];
+    
+    if (account_id) {
+      sql += " AND account_id != $2";
+      params.push(account_id);
+    }
+    
+    const result = await pool.query(sql, params);
+    return result.rows.length > 0;
+  } catch (error) {
+    console.error("checkEmailExists error:", error);
+    return false;
+  }
+};
+
+module.exports = accountModel;
