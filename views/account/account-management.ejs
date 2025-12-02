@@ -1,0 +1,38 @@
+<%- include('../partials/header') %>
+<main class="account-management">
+  <h1>Account Management</h1>
+  
+  <% if (messages.notice) { %>
+    <div class="notice"><%= messages.notice %></div>
+  <% } %>
+  
+  <!-- Greeting based on account type -->
+  <% if (accountData.account_type === 'Client') { %>
+    <h2>Welcome <%= accountData.account_firstname %></h2>
+  <% } else if (accountData.account_type === 'Employee' || accountData.account_type === 'Admin') { %>
+    <h2>Welcome <%= accountData.account_firstname %></h2>
+  <% } %>
+  
+  <!-- Account Information -->
+  <div class="account-info">
+    <p><strong>Name:</strong> <%= accountData.account_firstname %> <%= accountData.account_lastname %></p>
+    <p><strong>Email:</strong> <%= accountData.account_email %></p>
+    <p><strong>Account Type:</strong> <%= accountData.account_type %></p>
+  </div>
+  
+  <!-- Update Account Link (for all users) -->
+  <div class="account-actions">
+    <a href="/account/update" class="btn">Update Account Information</a>
+  </div>
+  
+  <!-- Inventory Management Section (only for Employee/Admin) -->
+  <% if (accountData.account_type === 'Employee' || accountData.account_type === 'Admin') { %>
+    <div class="inventory-section">
+      <h3>Inventory Management</h3>
+      <p>
+        <a href="/inv/" class="btn-inventory">Access Inventory Management</a>
+      </p>
+    </div>
+  <% } %>
+</main>
+<%- include('../partials/footer') %>
