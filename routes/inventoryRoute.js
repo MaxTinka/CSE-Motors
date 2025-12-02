@@ -1,36 +1,22 @@
-const express = require("express")
-const router = express.Router()
-const invController = require("../controllers/inventoryController")
-const utilities = require("../utilities/")
-const invValidate = require("../middleware/inventory-validation")
+const express = require("express");
+const router = express.Router();
+const invController = require("../controllers/inventoryController");
+const invAuth = require("../middleware/inventory-auth");
 
-// GET management view
-router.get("/", utilities.handleErrors(invController.buildManagement))
+// Public routes (no authentication required)
+router.get("/type/:classificationId", invController.buildByClassificationId);
+router.get("/detail/:inventoryId", invController.buildByInventoryId);
+router.get("/getInventory/:classification_id", invController.getInventoryJSON);
 
-// GET add classification view
-router.get("/add-classification", utilities.handleErrors(invController.buildAddClassification))
+// Protected routes (require Employee or Admin)
+router.get("/", invAuth.requireEmployeeOrAdmin, invController.buildManagement);
+router.get("/add-classification", invAuth.requireEmployeeOrAdmin, invController.buildAddClassification);
+router.post("/add-classification", invAuth.requireEmployeeOrAdmin, invController.addClassification);
+router.get("/add-inventory", invAuth.requireEmployeeOrAdmin, invController.buildAddInventory);
+router.post("/add-inventory", invAuth.requireEmployeeOrAdmin, invController.addInventory);
+router.get("/edit/:inventory_id", invAuth.requireEmployeeOrAdmin, invController.buildEditInventory);
+router.post("/update/", invAuth.requireEmployeeOrAdmin, invController.updateInventory);
+router.get("/delete/:inventory_id", invAuth.requireEmployeeOrAdmin, invController.buildDeleteInventory);
+router.post("/delete/", invAuth.requireEmployeeOrAdmin, invController.deleteInventory);
 
-// GET add inventory view  
-router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventory))
-
-// POST new classification
-router.post(
-  "/add-classification",
-  invValidate.classificationRules(),
-  invValidate.checkClassificationData,
-  utilities.handleErrors(invController.addClassification)
-)
-
-// POST new inventory
-router.post(
-  "/add-inventory", 
-  invValidate.inventoryRules(),
-  invValidate.checkInventoryData,
-  utilities.handleErrors(invController.addInventory)
-)
-
-// Existing routes
-router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId))
-router.get("/detail/:invId", utilities.handleErrors(invController.buildByInvId))
-
-module.exports = router
+module.exports = router;
