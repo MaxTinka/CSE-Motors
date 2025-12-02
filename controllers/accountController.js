@@ -17,7 +17,7 @@ accountController.buildLogin = async function (req, res, next) {
     });
   } catch (error) {
     console.error("buildLogin error:", error);
-    next(error);
+    res.status(500).send("Login page error");
   }
 };
 
@@ -34,74 +34,7 @@ accountController.buildRegister = async function (req, res, next) {
     });
   } catch (error) {
     console.error("buildRegister error:", error);
-    next(error);
-  }
-};
-
-/* ***************************
- * Process registration
- * ************************** */
-accountController.registerAccount = async function (req, res) {
-  try {
-    let nav = await utilities.getNav();
-    const { 
-      account_firstname, 
-      account_lastname, 
-      account_email, 
-      account_password 
-    } = req.body;
-
-    // For now, just redirect to login
-    req.flash(
-      "notice",
-      `Congratulations, you're registered. Please log in.`
-    );
-    return res.redirect("/account/login");
-  } catch (error) {
-    console.error("registerAccount error:", error);
-    req.flash("notice", "Sorry, the registration failed.");
-    return res.redirect("/account/register");
-  }
-};
-
-/* ***************************
- * Process login
- * ************************** */
-accountController.accountLogin = async function (req, res) {
-  try {
-    const { account_email, account_password } = req.body;
-    
-    // Simple authentication for now
-    // In a real app, you would check against database
-    if (account_email && account_password) {
-      // Create a simple JWT token
-      const token = jwt.sign(
-        { 
-          account_id: 1,
-          account_type: "Client",
-          account_email: account_email,
-          account_firstname: "User"
-        },
-        process.env.ACCESS_TOKEN_SECRET || "your-secret-key",
-        { expiresIn: "1h" }
-      );
-
-      // Set cookie
-      res.cookie("jwt", token, { 
-        httpOnly: true, 
-        maxAge: 3600000 // 1 hour
-      });
-
-      req.flash("notice", `Welcome back!`);
-      return res.redirect("/account/");
-    } else {
-      req.flash("notice", "Please check your credentials and try again.");
-      return res.redirect("/account/login");
-    }
-  } catch (error) {
-    console.error("accountLogin error:", error);
-    req.flash("notice", "Sorry, login failed.");
-    return res.redirect("/account/login");
+    res.status(500).send("Register page error");
   }
 };
 
@@ -112,12 +45,12 @@ accountController.buildAccountManagement = async function (req, res, next) {
   try {
     let nav = await utilities.getNav();
     
-    // Simple account data for now
+    // Demo account data
     const accountData = {
       account_id: 1,
-      account_firstname: "User",
-      account_lastname: "Name",
-      account_email: "user@example.com",
+      account_firstname: "Demo",
+      account_lastname: "User",
+      account_email: "demo@example.com",
       account_type: "Client"
     };
     
@@ -129,71 +62,55 @@ accountController.buildAccountManagement = async function (req, res, next) {
     });
   } catch (error) {
     console.error("buildAccountManagement error:", error);
-    next(error);
+    res.status(500).send("Account management page error");
   }
 };
 
 /* ***************************
- * Build update account view
+ * Process registration
  * ************************** */
-accountController.buildUpdateAccount = async function (req, res, next) {
+accountController.registerAccount = async function (req, res) {
   try {
-    let nav = await utilities.getNav();
+    req.flash("notice", "Registration successful! Please log in.");
+    res.redirect("/account/login");
+  } catch (error) {
+    console.error("registerAccount error:", error);
+    req.flash("notice", "Registration failed.");
+    res.redirect("/account/register");
+  }
+};
+
+/* ***************************
+ * Process login
+ * ************************** */
+accountController.accountLogin = async function (req, res) {
+  try {
+    const { account_email, account_password } = req.body;
     
-    // Simple account data for now
-    const accountData = {
-      account_id: 1,
-      account_firstname: "User",
-      account_lastname: "Name",
-      account_email: "user@example.com",
-      account_type: "Client"
-    };
-    
-    res.render("account/update-account", {
-      title: "Update Account",
-      nav,
-      accountData,
-      errors: null,
+    // Demo login - accept any credentials
+    const token = jwt.sign(
+      { 
+        account_id: 1,
+        account_type: "Client",
+        account_email: account_email || "demo@example.com",
+        account_firstname: "Demo"
+      },
+      process.env.ACCESS_TOKEN_SECRET || "demo-secret-key",
+      { expiresIn: "1h" }
+    );
+
+    // Set cookie
+    res.cookie("jwt", token, { 
+      httpOnly: true, 
+      maxAge: 3600000
     });
-  } catch (error) {
-    console.error("buildUpdateAccount error:", error);
-    next(error);
-  }
-};
 
-/* ***************************
- * Process account update
- * ************************** */
-accountController.processUpdate = async function (req, res) {
-  try {
-    const { 
-      account_firstname, 
-      account_lastname, 
-      account_email 
-    } = req.body;
-
-    // For now, just show success message
-    req.flash("notice", "Your account has been updated successfully.");
-    return res.redirect("/account/");
+    req.flash("notice", "Welcome back!");
+    res.redirect("/account/");
   } catch (error) {
-    console.error("processUpdate error:", error);
-    req.flash("notice", "Sorry, the update failed.");
-    return res.redirect("/account/update");
-  }
-};
-
-/* ***************************
- * Process password change
- * ************************** */
-accountController.processPasswordChange = async function (req, res) {
-  try {
-    // For now, just show success message
-    req.flash("notice", "Your password has been updated successfully.");
-    return res.redirect("/account/");
-  } catch (error) {
-    console.error("processPasswordChange error:", error);
-    req.flash("notice", "Sorry, password update failed.");
-    return res.redirect("/account/update");
+    console.error("accountLogin error:", error);
+    req.flash("notice", "Login failed.");
+    res.redirect("/account/login");
   }
 };
 
@@ -202,15 +119,45 @@ accountController.processPasswordChange = async function (req, res) {
  * ************************** */
 accountController.logout = async function (req, res) {
   try {
-    // Clear the JWT cookie
     res.clearCookie("jwt");
-    req.flash("notice", "You have been logged out successfully.");
-    return res.redirect("/");
+    req.flash("notice", "Logged out successfully.");
+    res.redirect("/");
   } catch (error) {
     console.error("logout error:", error);
     req.flash("notice", "Logout failed.");
-    return res.redirect("/");
+    res.redirect("/");
   }
+};
+
+// Add placeholder functions to avoid errors
+accountController.buildUpdateAccount = async function (req, res, next) {
+  try {
+    let nav = await utilities.getNav();
+    res.render("account/update-account", {
+      title: "Update Account",
+      nav,
+      accountData: {
+        account_id: 1,
+        account_firstname: "Demo",
+        account_lastname: "User",
+        account_email: "demo@example.com"
+      },
+      errors: null,
+    });
+  } catch (error) {
+    console.error("buildUpdateAccount error:", error);
+    res.status(500).send("Update account page error");
+  }
+};
+
+accountController.processUpdate = async function (req, res) {
+  req.flash("notice", "Account updated successfully.");
+  res.redirect("/account/");
+};
+
+accountController.processPasswordChange = async function (req, res) {
+  req.flash("notice", "Password changed successfully.");
+  res.redirect("/account/");
 };
 
 module.exports = accountController;
