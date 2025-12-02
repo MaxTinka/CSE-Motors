@@ -1,16 +1,21 @@
 <%- include('../partials/header') %>
-<main class="management">
-    <h1>Inventory Management</h1>
-    
-    <% if (message) { %>
-        <div class="message <%= messageType || 'success' %>">
-            <%= message %>
-        </div>
-    <% } %>
-    
-    <div class="management-links">
-        <a href="/inv/add-classification" class="btn btn-primary">Add New Classification</a>
-        <a href="/inv/add-inventory" class="btn btn-primary">Add New Vehicle</a>
+<main>
+  <h1>Inventory Management</h1>
+  
+  <% if (messages && messages.notice) { %>
+    <div class="notice"><%= messages.notice %></div>
+  <% } %>
+  
+  <div class="management-links">
+    <a href="/inv/add-classification" class="btn">Add New Classification</a>
+    <a href="/inv/add-inventory" class="btn">Add New Vehicle</a>
+  </div>
+  
+  <% if (classificationSelect) { %>
+    <div class="classification-select">
+      <h2>Existing Classifications</h2>
+      <%- classificationSelect %>
     </div>
+  <% } %>
 </main>
 <%- include('../partials/footer') %>
