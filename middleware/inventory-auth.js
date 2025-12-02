@@ -2,26 +2,12 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const inventoryAuth = {
-  // Middleware to check if user is Employee or Admin for inventory management
+  // Middleware to check if user is Employee or Admin
   requireEmployeeOrAdmin: (req, res, next) => {
-    // TEMPORARY: Allow all access for grading purposes
-    console.log("Auth bypassed for grading - allowing access to inventory management");
-    
-    // Create a temporary admin user for demo
-    res.locals.accountData = {
-      account_type: "Admin",
-      account_firstname: "Grading",
-      account_email: "grader@example.com"
-    };
-    
-    next();
-    
-    // COMMENT OUT THE ORIGINAL CODE BELOW:
-    /*
     const token = req.cookies.jwt;
     
     if (!token) {
-      req.flash("notice", "Please log in to access inventory management.");
+      req.flash("error", "Please log in to access inventory management.");
       return res.redirect("/account/login");
     }
 
@@ -29,18 +15,49 @@ const inventoryAuth = {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "your-secret-key");
       
       if (decoded.account_type !== 'Employee' && decoded.account_type !== 'Admin') {
-        req.flash("notice", "You do not have permission to access inventory management.");
-        return res.redirect("/account/");
+        req.flash("error", "You do not have permission to access inventory management.");
+        return res.status(403).render("account/login", {
+          title: "Access Denied",
+          errors: ["Insufficient permissions."]
+        });
       }
       
       res.locals.accountData = decoded;
       next();
     } catch (error) {
+      console.error("Auth error:", error);
       res.clearCookie("jwt");
-      req.flash("notice", "Your session has expired. Please log in again.");
+      req.flash("error", "Your session has expired. Please log in again.");
       return res.redirect("/account/login");
     }
-    */
+  },
+
+  // Check if user can modify inventory (Admin only for delete, Employee/Admin for edit)
+  canModifyInventory: (action) => {
+    return (req, res, next) => {
+      const token = req.cookies.jwt;
+      
+      if (!token) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      try {
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "your-secret-key");
+        
+        if (action === 'delete' && decoded.account_type !== 'Admin') {
+          return res.status(403).json({ error: "Admin privileges required for deletion" });
+        }
+        
+        if ((action === 'edit' || action === 'update') && 
+            decoded.account_type !== 'Employee' && decoded.account_type !== 'Admin') {
+          return res.status(403).json({ error: "Employee or Admin privileges required" });
+        }
+        
+        next();
+      } catch (error) {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+    };
   }
 };
 
